@@ -98,7 +98,7 @@ void loop()
       lcd.setCursor(0,0);
       lcd.print("Code: ");
       
-      while (currentLength < 4)
+      while (currentLength < 1000)
         {
           
           timer();
