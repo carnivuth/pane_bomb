@@ -6,10 +6,8 @@
 
 #include <Keypad.h>
 #include <LiquidCrystal.h>
-#include <Tone.h>
 #define pound 14
 
-Tone tone1;
 
 int Scount = 12; // count seconds
 int Mcount = 10; // count minutes
@@ -31,12 +29,12 @@ int ledPin3 = 2; //green led
 LiquidCrystal lcd(7,8,10,11,12,13); // the pins we use on the LCD
 
 const byte ROWS = 4; //four rows
-const byte COLS = 3; //three columns
+const byte COLS = 4; //three columns
 char keys[ROWS][COLS] = {
-  {'1','2','3'},
-  {'4','5','6'},
-  {'7','8','9'},
-  {'*','0','#'}
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
 };
 byte rowPins[ROWS] = {5, A5, A4, A2}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {A1, A0, A3}; //connect to the column pinouts of the keypad
@@ -48,7 +46,6 @@ void setup(){
   pinMode(ledPin, OUTPUT); // sets the digital pin as output
   pinMode(ledPin2, OUTPUT); // sets the digital pin as output
   pinMode(ledPin3, OUTPUT); // sets the digital pin as output
-  tone1.begin(9);
   lcd.begin(16, 2);
   Serial.begin(9600);
   lcd.clear();
@@ -67,7 +64,6 @@ void setup(){
       lcd.print(key);
       password[currentLength] = key;
       currentLength++;
-      tone1.play(NOTE_C6, 200);
       }
     }
   }
@@ -85,7 +81,6 @@ void setup(){
     lcd.print(password[2]);
     lcd.print(password[3]);
 
-    tone1.play(NOTE_E6, 200);
     delay(3000);
     lcd.clear();
     currentLength = 0;
@@ -126,7 +121,6 @@ void loop()
               lcd.print(key2);
               entered[currentLength] = key2;
               currentLength++;
-              tone1.play(NOTE_C6, 200);
               delay(100);
               lcd.noCursor();
               lcd.setCursor(currentLength + 6, 0);
@@ -198,22 +192,16 @@ void timer()
       while (Mcount < 0) 
       {
         digitalWrite(ledPin, HIGH); // sets the LED on
-        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin, LOW); // sets the LED off
-        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin2, HIGH); // sets the LED on
-        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin2, LOW); // sets the LED off
-        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin3, HIGH); // sets the LED on
-        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin3, LOW); // sets the LED off
-        tone1.play(NOTE_A2, 90);
         delay(100);
       }
     } 
@@ -288,7 +276,6 @@ void timer()
   
       if(currentMillis - secMillis > interval) 
         {
-          tone1.play(NOTE_G5, 200);
           secMillis = currentMillis;
           Scount --; // add 1 to Scount
           digitalWrite(ledPin2, HIGH); // sets the LED on
