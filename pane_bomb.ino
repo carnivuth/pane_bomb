@@ -31,7 +31,7 @@ int ledPin3 = 2; //green led
 LiquidCrystal lcd(7,8,10,11,12,13); // the pins we use on the LCD
 
 const byte ROWS = 4; //four rows
-const byte COLS = 3; //three columns
+const byte COLS = 4; //three columns
 char keys[ROWS][COLS] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
