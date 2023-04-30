@@ -9,7 +9,7 @@
 #define pound 14
 Tone tone1;
 
-int Scount = 12; // count seconds
+int Scount = 0; // count seconds
 int Mcount = 10; // count minutes
 int Hcount = 0; // count hours
 int DefuseTimer = 0; // set timer to 0
@@ -137,10 +137,28 @@ void setup(){
   || input[4] != adminpwd[4]);
   clearDisplay();
   char time[4];
+    lcd.print("Timer: ");
+
   getFromKeyPad(3,time);
   time[4]='\0';
   Mcount=atoi(time);
+  clearDisplay();
   getBombPwd();
+  char ActivationCode[bombpwdsize];
+  int flag=1;
+  do{
+     clearDisplay();
+      lcd.print("Activate: ");
+    getFromKeyPad(bombpwdsize,ActivationCode);
+    flag=1;
+    for(int j=0;j<bombpwdsize;j++){
+      if(ActivationCode[j]!=password[j])flag=0;
+    }
+  }while(flag==0);
+  clearDisplay();
+      lcd.print("lesssgoooooooo");
+      clearDisplay();
+
 }
 
   
