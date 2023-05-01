@@ -7,34 +7,41 @@
 #include <LiquidCrystal.h>
 #include <Tone.h>
 #define pound 14
+//buzzer
 Tone tone1;
 
-int Scount = 0; // count seconds
-int Mcount = 10; // count minutes
-int Hcount = 0; // count hours
-int DefuseTimer = 0; // set timer to 0
-//admin stuff
+//counters
+int Scount = 0; 
+int Mcount = 0; 
+int Hcount = 0; 
+
+int DefuseTimer = 0; 
+//admin parameters
 int adminpwdl=5;
-char adminpwd[5]="12345";
+// CHANGE BEFORE DEPLOYMENT
+char adminpwd[6]="12345";
 
+long secMillis = 0; 
+long interval = 1000;
 
-long secMillis = 0; // store last time for second add
-long interval = 1000; // interval for seconds
-/// bomb password stuff
+/// bomb parameters
 const int bombpwdsize=7;
-char password[bombpwdsize]; // number of characters in our password
-int currentLength = 0; //defines which number we are currently writing
+char password[bombpwdsize]; 
+int currentLength = 0;
 int i = 0; 
 char entered[bombpwdsize];
 
-int ledPin = 4; //red led
-int ledPin2 = 3; //yellow led
-int ledPin3 = 2; //green led
+//LEDs
+int ledPin = 4; 
+int ledPin2 = 3; 
+int ledPin3 = 2;
 
-LiquidCrystal lcd(7,8,10,11,12,13); // the pins we use on the LCD
+//LCD display
+LiquidCrystal lcd(7,8,10,11,12,13); 
 
-const byte ROWS = 4; //four rows
-const byte COLS = 4; //three columns
+//KEYPAD
+const byte ROWS = 4; 
+const byte COLS = 4; 
 char keys[ROWS][COLS] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
@@ -43,34 +50,61 @@ char keys[ROWS][COLS] = {
 };
 byte rowPins[ROWS] = {A0, 5, A1, A2}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {A3, A4, A5, 6};
-
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
+// Clear display
 void clearDisplay(){
   lcd.clear();
   lcd.setCursor(0,0);
 }
-void getFromKeyPad(int size,char * result){
+
+//string comparison
+int checkString(char * str1, char * str2, int dim){
+  int result=1;
+  for (int i=0; i<dim; i++){
+    if(str1[i]!=str2[i])result=0;
+  }
+    return result;
+
+}
+
+//get string from keypad
+void getFromKeyPad(int size,char * result, char * text,int mask){
   int cursize=0;
+  clearDisplay();
+  lcd.print(text);
   while (cursize< size){
-    char key2 = keypad.getKey();
-    if (key2 != NO_KEY)    
-            { 
-              lcd.setCursor(cursize + 7, 1);
-              lcd.cursor();          
-              lcd.print(key2);
-              result[cursize] = key2;
-              cursize++;
-              tone1.play(NOTE_C6, 200);
-              delay(100);
-              lcd.print('*');
-              lcd.noCursor();
-              lcd.setCursor(cursize + 6, 1);
-              lcd.setCursor(cursize + 7, 1);
-              lcd.cursor();
-            }
+    //get keypress
+    char key = keypad.getKey();
+    if (key != NO_KEY){ 
+      //check  for valid character
+      if(key!= '*' && key!= '#'){
+         lcd.setCursor(cursize + 7, 1);
+         lcd.cursor();          
+         lcd.print(key);
+         result[cursize] = key;
+         cursize++;
+         tone1.play(NOTE_C6, 200);
+         delay(100);
+         // mask input 
+         if (mask==1) lcd.print('*');
+         lcd.noCursor();
+         lcd.setCursor(cursize + 6, 1);
+         lcd.setCursor(cursize + 7, 1);
+         lcd.cursor();
+      }
+      //reset buffer
+      if(key == '#'){
+        cursize=0;
+        clearDisplay();
+        lcd.print(text);
+
+      }
+             
+    }
   }
 }
+// get bomb code
 void getBombPwd(){
   int lenght=0;
    lcd.print("Enter Code: ");
@@ -112,54 +146,51 @@ void getBombPwd(){
 }
 
 void setup(){
-  pinMode(ledPin, OUTPUT); // sets the digital pin as output
-  pinMode(ledPin2, OUTPUT); // sets the digital pin as output
-  pinMode(ledPin3, OUTPUT); // sets the digital pin as output
+  //LED setup
+  pinMode(ledPin, OUTPUT); 
+  pinMode(ledPin2, OUTPUT); 
+  pinMode(ledPin3, OUTPUT); 
+  //buzzer setup
   tone1.begin(9);
+  //LCD setup
   lcd.begin(16, 2);
+  //Serial setup
   Serial.begin(9600);
-  ///request admin pwd
-  char input[adminpwdl];
-  lcd.print("ho il cazzone");
+
+  //show output display
+  lcd.print("Pane Bomb");
   delay(3000);
   clearDisplay();
-
+  
+  //request admin pwd
+  char input[adminpwdl];
   do{
+    getFromKeyPad(adminpwdl,input,"Enter admin pwd: ",1);
 
-    clearDisplay();
-    lcd.print("Enter admin pwd: ");
-    getFromKeyPad(adminpwdl,input);
-
-  }while(input[0] != adminpwd[0] 
-  || input[1] != adminpwd[1] 
-  || input[2] != adminpwd[2] 
-  || input[3] != adminpwd[3] 
-  || input[4] != adminpwd[4]);
-  clearDisplay();
+  }while(checkString(input,adminpwd,adminpwdl)==0);
+  
+  //set match time
   char time[4];
-    lcd.print("Timer: ");
-
-  getFromKeyPad(3,time);
+  getFromKeyPad(3,time,"Timer: ",0);
   time[4]='\0';
   Mcount=atoi(time);
-  clearDisplay();
-  getBombPwd();
-  char ActivationCode[bombpwdsize];
-  int flag=1;
+
+  // set match bomb password
+  getFromKeyPad(bombpwdsize,password,"Enter Code: ",0);
+  
+  //activate bomb
+  char activationCode[bombpwdsize];
   do{
      clearDisplay();
       lcd.print("Activate: ");
-    getFromKeyPad(bombpwdsize,ActivationCode);
-    flag=1;
-    for(int j=0;j<bombpwdsize;j++){
-      if(ActivationCode[j]!=password[j])flag=0;
-    }
-  }while(flag==0);
+    getFromKeyPad(bombpwdsize,activationCode,"Activate: ",1);
+  }while(checkString(activationCode,password,bombpwdsize)==0);
   clearDisplay();
       lcd.print("lesssgoooooooo");
       clearDisplay();
 
 }
+
 
   
 
