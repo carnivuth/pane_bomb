@@ -1,2 +1,4 @@
-# pane_bomb
+# Pane Bomb
 softair arduino bomb 
+## Circuit Schematics
+![schematics](img/schematics.png)
