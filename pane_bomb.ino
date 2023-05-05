@@ -73,8 +73,6 @@ void getFromKeyPad(int size,char * result, char * text,int mask){
          cursize++;
          //tone1.play(NOTE_C6, 200);
          delay(100);
-         // mask input 
-         if (mask==1) 
       }
       //reset buffer
       if(key == '#'){
@@ -180,7 +178,7 @@ void loop()
           if (flag==1)
             {
               ////BOMB DEFUSED
-              
+
               currentLength = 0;
               digitalWrite(ledPin3, HIGH);
               delay(2500);
