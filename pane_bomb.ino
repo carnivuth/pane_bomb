@@ -72,7 +72,6 @@ void getFromKeyPad(int size,char * result, char * text,int mask){
          result[cursize] = key;
          cursize++;
          //tone1.play(NOTE_C6, 200);
-         delay(100);
       }
       //reset buffer
       if(key == '#'){
