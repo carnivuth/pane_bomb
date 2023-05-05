@@ -10,7 +10,7 @@
 
 //counters
 int Scount = 0; 
-int Mcount = 0; 
+int Mcount = 15; 
 int Hcount = 0; 
 
 int DefuseTimer = 0; 
@@ -23,8 +23,8 @@ long secMillis = 0;
 long interval = 1000;
 
 /// bomb parameters
-const int bombpwdsize=7;
-char password[bombpwdsize]; 
+const int bombpwdsize=8;
+char password[bombpwdsize]="1234567"; 
 int currentLength = 0;
 int i = 0; 
 char entered[bombpwdsize];
@@ -100,31 +100,12 @@ void setup(){
   //show output display
   delay(3000);
   
-  //request admin pwd
-  char input[adminpwdl];
-  do{
-    getFromKeyPad(adminpwdl,input,"Enter admin pwd: ",1);
-
-  }while(checkString(input,adminpwd,adminpwdl)==0);
-  
-  //set match time
-  char time[4];
-  getFromKeyPad(3,time,"Timer: ",0);
-  time[4]='\0';
-  Mcount=atoi(time);
-
-  // set match bomb password
-  getFromKeyPad(bombpwdsize,password,"Enter Code: ",0);
-  
   //activate bomb
   char activationCode[bombpwdsize];
   do{
     getFromKeyPad(bombpwdsize,activationCode,"Activate: ",1);
   }while(checkString(activationCode,password,bombpwdsize)==0);
   
-  //print to output
-  
-
 }
 
 
