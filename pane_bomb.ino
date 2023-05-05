@@ -105,55 +105,20 @@ void getFromKeyPad(int size,char * result, char * text,int mask){
   }
 }
 // get bomb code
-void getBombPwd(){
-  int lenght=0;
-   lcd.print("Enter Code: ");
-  while (lenght < bombpwdsize)
-  {
-    lcd.setCursor(lenght + 6, 1);
-    lcd.cursor();
-    char key = keypad.getKey();
-    if (key != NO_KEY)
-    {
-      if ((key != '*')&&(key != '#'))
-      { 
-      lcd.print(key);
-      password[lenght] = key;
-      lenght++;
-      tone1.play(NOTE_C6, 200);
-      }
-    }
-  }
-
-  if (lenght == bombpwdsize)
-  {
-    delay(500);
-    lcd.noCursor();
-    lcd.clear();
-    lcd.home();
-    lcd.print("You've Entered: ");
-    lcd.setCursor(6,1);
-    //print password
-    for(int j=0;j<bombpwdsize; j++ ){
-              lcd.print(password[j]);
-    }
-    tone1.play(NOTE_E6, 200);
-    delay(3000);
-    lcd.clear();
-    lenght = 0;
-  }
-
-}
 
 void setup(){
+
   //LED setup
   pinMode(ledPin, OUTPUT); 
   pinMode(ledPin2, OUTPUT); 
   pinMode(ledPin3, OUTPUT); 
+
   //buzzer setup
   tone1.begin(9);
+
   //LCD setup
   lcd.begin(16, 2);
+
   //Serial setup
   Serial.begin(9600);
 
@@ -182,12 +147,13 @@ void setup(){
   char activationCode[bombpwdsize];
   do{
      clearDisplay();
-      lcd.print("Activate: ");
     getFromKeyPad(bombpwdsize,activationCode,"Activate: ",1);
   }while(checkString(activationCode,password,bombpwdsize)==0);
+  
+  //print to output
   clearDisplay();
-      lcd.print("lesssgoooooooo");
-      clearDisplay();
+  lcd.print("bomb activated");
+  clearDisplay();
 
 }
 
