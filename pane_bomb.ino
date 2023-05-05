@@ -82,11 +82,14 @@ void getFromKeyPad(int size,char * result, char * text,int mask){
          lcd.cursor();          
          lcd.print(key);
          result[cursize] = key;
-         delay(100);
-         if (mask==1) lcd.print('*');
+
+         // mask input 
+         if (mask==1) {
+          lcd.setCursor(cursize + 7, 1);
+          lcd.print('*');
+          }
          cursize++;
          //tone1.play(NOTE_C6, 200);
-         // mask input 
          lcd.noCursor();
          lcd.setCursor(cursize + 6, 1);
          lcd.setCursor(cursize + 7, 1);
@@ -123,7 +126,7 @@ void setup(){
 
   //show output display
   lcd.print("Pane Bomb");
-  delay(3000);
+  delay(30);
   clearDisplay();
   
   //request admin pwd
