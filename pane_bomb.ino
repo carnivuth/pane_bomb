@@ -4,7 +4,6 @@
 /////////////////////////////
 
 #include <Keypad.h>
-#include <LiquidCrystal.h>
 #include <Tone.h>
 #define pound 14
 //buzzer
@@ -36,8 +35,6 @@ int ledPin = 4;
 int ledPin2 = 3; 
 int ledPin3 = 2;
 
-//LCD display
-LiquidCrystal lcd(7,8,10,11,12,13); 
 
 //KEYPAD
 const byte ROWS = 4; 
@@ -52,11 +49,6 @@ byte rowPins[ROWS] = {A0, 5, A1, A2}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {A3, A4, A5, 6};
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
-// Clear display
-void clearDisplay(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-}
 
 //string comparison
 int checkString(char * str1, char * str2, int dim){
@@ -71,33 +63,23 @@ int checkString(char * str1, char * str2, int dim){
 //get string from keypad
 void getFromKeyPad(int size,char * result, char * text,int mask){
   int cursize=0;
-  clearDisplay();
-  lcd.print(text);
   while (cursize< size){
     //get keypress
     char key = keypad.getKey();
     if (key != NO_KEY){ 
       //check  for valid character
       if(key!= '*' && key!= '#'){
-         lcd.setCursor(cursize + 7, 1);
-         lcd.cursor();          
-         lcd.print(key);
+         
          result[cursize] = key;
          cursize++;
          tone1.play(NOTE_C6, 200);
          delay(100);
          // mask input 
-         if (mask==1) lcd.print('*');
-         lcd.noCursor();
-         lcd.setCursor(cursize + 6, 1);
-         lcd.setCursor(cursize + 7, 1);
-         lcd.cursor();
+         if (mask==1) 
       }
       //reset buffer
       if(key == '#'){
         cursize=0;
-        clearDisplay();
-        lcd.print(text);
 
       }
              
@@ -116,16 +98,11 @@ void setup(){
   //buzzer setup
   tone1.begin(9);
 
-  //LCD setup
-  lcd.begin(16, 2);
-
   //Serial setup
   Serial.begin(9600);
 
   //show output display
-  lcd.print("Pane Bomb");
   delay(3000);
-  clearDisplay();
   
   //request admin pwd
   char input[adminpwdl];
@@ -146,14 +123,11 @@ void setup(){
   //activate bomb
   char activationCode[bombpwdsize];
   do{
-     clearDisplay();
     getFromKeyPad(bombpwdsize,activationCode,"Activate: ",1);
   }while(checkString(activationCode,password,bombpwdsize)==0);
   
   //print to output
-  clearDisplay();
-  lcd.print("bomb activated");
-  clearDisplay();
+  
 
 }
 
@@ -171,9 +145,7 @@ void loop()
   
   if (key2 == '*')
     {
-      lcd.clear();
-      lcd.setCursor(0,0);
-      lcd.print("Code: ");
+     
       
       while (currentLength < bombpwdsize)
         {
@@ -184,27 +156,19 @@ void loop()
           if (key2 == '#')
             {
               currentLength = 0;
-              lcd.clear();
-              lcd.setCursor(0,0);
-              lcd.print("Code: ");
+           
             }
           else                  
           if (key2 != NO_KEY)    
             {
               
-              lcd.setCursor(currentLength + 7, 0);
-              lcd.cursor();
+        
               
-              lcd.print(key2);
               entered[currentLength] = key2;
               currentLength++;
               tone1.play(NOTE_C6, 200);
               delay(100);
-              lcd.noCursor();
-              lcd.setCursor(currentLength + 6, 0);
-              lcd.print("*");
-              lcd.setCursor(currentLength + 7, 0);
-              lcd.cursor();
+       
             }
         }
 
@@ -216,23 +180,17 @@ void loop()
           }
           if (flag==1)
             {
-              lcd.noCursor();
-              lcd.clear();
-              lcd.home();
-              lcd.print("Bomb Defused");
+              ////BOMB DEFUSED
+           
               currentLength = 0;
               digitalWrite(ledPin3, HIGH);
               delay(2500);
-              lcd.setCursor(0,1);
-              lcd.print("Reset the Bomb");
+             
               delay(1000000);
             }
       else
         {
-          lcd.noCursor();
-          lcd.clear();
-          lcd.home();
-          lcd.print("Wrong Password!");
+    
     
           if (Hcount > 0)
             {
@@ -264,12 +222,7 @@ void timer()
   {
     if ( Mcount < 0 )
     {
-      lcd.noCursor();
-      lcd.clear();
-      lcd.home();
-      lcd.print("The Bomb Has ");
-      lcd.setCursor (0,1);
-      lcd.print("Exploded!");
+      
       
       while (Mcount < 0) 
       {
@@ -295,50 +248,34 @@ void timer()
     } 
   }
 
-  lcd.setCursor (0,1); // sets cursor to 2nd line
-  lcd.print ("Timer:");
 
   if (Hcount >= 10)
     {
-      lcd.setCursor (7,1);
-      lcd.print (Hcount);
+
     }
   if (Hcount < 10) 
     {
-      lcd.setCursor (7,1);
-      lcd.write ("0");
-      lcd.setCursor (8,1);
-      lcd.print (Hcount);
+ 
     }
 
-  lcd.print (":");
 
   if (Mcount >= 10)
     {
-      lcd.setCursor (10,1);
-      lcd.print (Mcount);
+   
     }
   if (Mcount < 10) 
     {
-      lcd.setCursor (10,1);
-      lcd.write ("0");
-      lcd.setCursor (11,1);
-      lcd.print (Mcount);
+   
     }
     
-  lcd.print (":");
 
   if (Scount >= 10) 
     {
-      lcd.setCursor (13,1);
-      lcd.print (Scount);
+     
     }
   if (Scount < 10) 
     {
-      lcd.setCursor (13,1);
-      lcd.write ("0");
-      lcd.setCursor (14,1);
-      lcd.print (Scount);
+
     }
 
   if (Hcount <0) 
@@ -371,7 +308,6 @@ void timer()
           delay(10); // waits for a second
           digitalWrite(ledPin2, LOW); // sets the LED off
           delay(10); // waits for a second
-          //lcd.clear();
         }
     }
 }
