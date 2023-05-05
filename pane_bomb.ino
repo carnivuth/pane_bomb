@@ -4,9 +4,10 @@
 /////////////////////////////
 
 #include <Keypad.h>
+#include <Tone.h>
 #define pound 14
 //buzzer
-//Tone tone1;
+Tone tone1;
 
 //counters
 int Scount = 0; 
@@ -14,10 +15,6 @@ int Mcount = 15;
 int Hcount = 0; 
 
 int DefuseTimer = 0; 
-//admin parameters
-int adminpwdl=5;
-// CHANGE BEFORE DEPLOYMENT
-char adminpwd[6]="12345";
 
 long secMillis = 0; 
 long interval = 1000;
@@ -71,7 +68,7 @@ void getFromKeyPad(int size,char * result, char * text,int mask){
          
          result[cursize] = key;
          cursize++;
-         //tone1.play(NOTE_C6, 200);
+         tone1.play(NOTE_C6, 200);
       }
       //reset buffer
       if(key == '#'){
@@ -92,7 +89,7 @@ void setup(){
   pinMode(ledPin3, OUTPUT); 
 
   //buzzer setup
-  //tone1.begin(9);
+  tone1.begin(9);
 
   //Serial setup
   Serial.begin(9600);
@@ -143,7 +140,7 @@ void loop()
               
               entered[currentLength] = key2;
               currentLength++;
-              //tone1.play(NOTE_C6, 200);
+              tone1.play(NOTE_C6, 200);
               delay(100);
        
             }
@@ -204,22 +201,22 @@ void timer()
       while (Mcount < 0) 
       {
         digitalWrite(ledPin, HIGH); // sets the LED on
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin, LOW); // sets the LED off
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin2, HIGH); // sets the LED on
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin2, LOW); // sets the LED off
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin3, HIGH); // sets the LED on
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100); 
         digitalWrite(ledPin3, LOW); // sets the LED off
-        //tone1.play(NOTE_A2, 90);
+        tone1.play(NOTE_A2, 90);
         delay(100);
       }
     } 
@@ -278,7 +275,7 @@ void timer()
   
       if(currentMillis - secMillis > interval) 
         {
-          //tone1.play(NOTE_G5, 200);
+          tone1.play(NOTE_G5, 200);
           secMillis = currentMillis;
           Scount --; // add 1 to Scount
           digitalWrite(ledPin2, HIGH); // sets the LED on
